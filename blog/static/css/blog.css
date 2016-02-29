@@ -16,3 +16,8 @@
     color: cornsilk;
 }
 
+.block_left{
+    float: left;
+    width: 20%;
+    font: 150% arial;
+}

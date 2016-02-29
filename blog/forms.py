@@ -1,5 +1,7 @@
 from django import forms
 from .models import Comment
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User
 
 
 class AddComment(forms.ModelForm):
@@ -22,3 +24,20 @@ class AddComment(forms.ModelForm):
             raise forms.ValidationError("Введите текст")
         self.text = text
         return self.cleaned_data
+
+
+class RegistrationForm(UserCreationForm):
+    class Meta:
+        model = User
+        fields = ('username', 'password1', 'password2', 'email')
+    username = forms.CharField(required=True, max_length=20)
+    password1 = forms.CharField(required=True, max_length=20, widget=forms.PasswordInput)
+    password2 = forms.CharField(required=True, max_length=20, widget=forms.PasswordInput)
+    email = forms.EmailField(required=True)
+
+    def clean_password2(self):
+        password1 = self.cleaned_data.get('password1')
+        password2 = self.cleaned_data.get('password2')
+        if password1 != password2:
+            raise forms.ValidationError("The two password fields did not match.")
+        return password2

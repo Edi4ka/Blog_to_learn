@@ -11,10 +11,12 @@
     <p>{{ comment.time_published }}</p>
     {% endfor %}
 
+    {% if user.is_authentificated %}
     <form method="post" action="">
     {% csrf_token %}
     <p>{{ form.text }}</p>
     <p><input type="submit" value="Оставить комментарий"></p>
     </form>
+    {% endif %}
 
 {% endblock %}

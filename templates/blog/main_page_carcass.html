@@ -14,6 +14,17 @@
     {% endblock %}
 </div>
 
+<div class="block_left">
+        {% if user.is_authenticated %}
+            <p> Добро пожаловать, {{ user.username }}. Снова.</p>
+            <p> <a href="/blog/logout">Выйти</a> </p>
+            {% else %}
+                <a href="/blog/registration"><p>Регистрация</p></a>
+
+            {% endif %}
+        <p>{% block return %} {% endblock %}</p>
+</div>
+
 </body>
 
 </html>
