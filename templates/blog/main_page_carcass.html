@@ -1,0 +1,19 @@
+{% load staticfiles %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/blog.css' %}" />
+<html lang="en">
+
+<head>
+
+</head>
+
+<body>
+<div class="block_top"></div>
+
+<div class="block_center">
+    {% block content %}
+    {% endblock %}
+</div>
+
+</body>
+
+</html>

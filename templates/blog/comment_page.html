@@ -1,0 +1,20 @@
+{% extends 'blog/main_page_carcass.html' %}
+{% block content %}
+    <p>{{ post.title }} {{ post.author }}{{ post.rating }}</p>
+    <p>{{ post.text }}</p>
+    <p>{{ post.time_published }}</p>
+
+    <p>Комментарии:</p>
+    {% for comment in comment_list %}
+    <p>{{ comment.author }}{{ comment.rating }}</p>
+    <p>{{ comment.text }}</p>
+    <p>{{ comment.time_published }}</p>
+    {% endfor %}
+
+    <form method="post" action="">
+    {% csrf_token %}
+    <p>{{ form.text }}</p>
+    <p><input type="submit" value="Оставить комментарий"></p>
+    </form>
+
+{% endblock %}

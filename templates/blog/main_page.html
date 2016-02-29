@@ -1,0 +1,10 @@
+{% extends 'blog/main_page_carcass.html' %}
+
+{%block content%}
+{% for post in posts %}
+    <p>{{ post.title }} {{ post.author }}{{ post.rating }}</p>
+    <p>{{ post.text }}</p>
+    <p>{{ post.time_published }}</p>
+    <p><a href="/blog/{{ post.id }}/">Комментарии: {{ post.comment_set.count }}</a></p>
+    {% endfor %}
+{% endblock %}

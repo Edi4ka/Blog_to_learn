@@ -1,0 +1,18 @@
+.block_center{
+    width: 800px;
+    font: 150% arial;
+    text-align: left;
+    margin: 0 auto;
+    background-color: whitesmoke;
+
+}
+
+.block_top{
+    height: 100px;
+
+}
+
+.color{
+    color: cornsilk;
+}
+
