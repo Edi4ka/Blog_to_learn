@@ -1,0 +1,11 @@
+{% extends 'blog/main_page_carcass.html' %}
+{% block content %}
+    <form action="" method="post">
+    {% csrf_token %}
+    {{ form }}
+    <input type="submit" value="Complete">
+    </form>
+{% endblock %}
+{% block return %}
+    <a href="{% url "main_page" %}">Вернуться на главную страницу</a>
+{% endblock %}

@@ -2,6 +2,7 @@ from django import forms
 from .models import Comment
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
+from django.contrib.auth import authenticate
 
 
 class AddComment(forms.ModelForm):
@@ -41,3 +42,25 @@ class RegistrationForm(UserCreationForm):
         if password1 != password2:
             raise forms.ValidationError("The two password fields did not match.")
         return password2
+
+
+class LoginUser(forms.ModelForm):
+    username = forms.CharField(required=True)
+    password = forms.CharField(required=True, widget=forms.PasswordInput)
+
+    class Meta:
+        model = User
+        fields = ('username', 'password', )
+
+    def __init__(self, *args, **kwargs):
+        self.user = None
+        super(LoginUser, self).__init__(*args, **kwargs)
+
+    def clean(self):
+        username = self.cleaned_data.get('username')
+        password = self.cleaned_data.get('password')
+        if username and password:
+            self.user = authenticate(username=username, password=password)
+            if self.user is None:
+                raise forms.ValidationError('Неправильное имя пользователя/пароль')
+        return self.cleaned_data
