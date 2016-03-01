@@ -8,5 +8,6 @@ urlpatterns = [
     url(r'blog/registration/$', views.registration_form, name='registration'),
     url(r'blog/registration_success/$', views.registration_success, name='registration_successful'),
     url(r'^blog/logout/$', 'django.contrib.auth.views.logout', {"next_page": "/"}),
-    url(r'^blog/login/$', views.login_user, name='login')
+    url(r'^blog/login/$', views.login_user, name='login'),
+    url(r'^blog/add_post/$', views.add_post, name='add_post')
 ]

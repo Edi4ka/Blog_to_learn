@@ -1,0 +1,18 @@
+{% extends 'blog/main_page_carcass.html' %}
+
+{% block content %}
+<form method='post' action="">
+{% csrf_token %}
+<p>Заголовок:{{ form.title }}</p>
+<p>Текст:</p>
+    <p>{{ form.text }}</p>
+    <p>Теги</p>
+    <p>{{ form.tags }}</p>
+<p><input type="submit" value="Добавить пост"></p>
+</form>
+
+{% endblock %}
+
+{% block return %}
+<a href="{% url "main_page" %}">Вернуться на главную страницу</a>
+{% endblock %}

@@ -6,7 +6,7 @@ class Post(models.Model):
     title = models.CharField(max_length=200)
     text = models.TextField()
     author = models.ForeignKey('auth.User')
-    tags = models.SlugField()
+    tags = models.SlugField(blank=True, null=True)
     time_published = models.DateTimeField(auto_now_add=True)
     time_edited = models.DateTimeField(auto_now_add=True)
     approved = models.BooleanField(default=False)

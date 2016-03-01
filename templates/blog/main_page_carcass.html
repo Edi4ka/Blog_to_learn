@@ -8,22 +8,24 @@
 
 <body>
 <div class="block_top"></div>
-
-<div class="block_center">
-    {% block content %}
-    {% endblock %}
-</div>
-
 <div class="block_left">
         {% if user.is_authenticated %}
             <p> Добро пожаловать, {{ user.username }}. Снова.</p>
             <p> <a href="/blog/logout">Выйти</a> </p>
+            {% if user.is_superuser %}
+                <p><a href="/blog/add_post">Добавить пост</a> </p>
+                {% endif %}
             {% else %}
                 <a href="/blog/registration"><p>Регистрация</p></a>
                 <a href="/blog/login"><p>Войти</p></a>
 
             {% endif %}
         <p>{% block return %} {% endblock %}</p>
+</div>
+
+<div class="block_center">
+    {% block content %}
+    {% endblock %}
 </div>
 
 </body>

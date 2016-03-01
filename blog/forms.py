@@ -1,5 +1,5 @@
 from django import forms
-from .models import Comment
+from .models import Comment, Post
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
@@ -63,4 +63,31 @@ class LoginUser(forms.ModelForm):
             self.user = authenticate(username=username, password=password)
             if self.user is None:
                 raise forms.ValidationError('Неправильное имя пользователя/пароль')
+        return self.cleaned_data
+
+
+class AddPost(forms.ModelForm):
+    title = forms.CharField(required=True, max_length=200)
+    text = forms.Textarea()
+    tags = forms.SlugField()
+
+    class Meta:
+        model = Post
+        fields = ('title', 'text',)
+
+    def __init__(self, *args, **kwargs):
+        super(AddPost, self).__init__(*args, **kwargs)
+        self.text = None
+        self.title = None
+        self.tags = None
+
+    def clean(self):
+        title = self.cleaned_data.get('title')
+        text = self.cleaned_data.get('text')
+        tags = self.cleaned_data.get('tags')
+        if len(text) < 5 or len(title) < 5:
+            raise forms.ValidationError('Слишком короткий пост/заголовок')
+        self.text = text
+        self.title = title
+        self.tags = tags
         return self.cleaned_data

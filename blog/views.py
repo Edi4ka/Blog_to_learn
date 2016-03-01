@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from .models import Post, Comment
 from django.utils import timezone
-from .forms import AddComment, RegistrationForm, LoginUser
+from .forms import AddComment, RegistrationForm, LoginUser, AddPost
 from django.contrib.auth import authenticate, login
 
 
@@ -18,14 +18,32 @@ def comments(request, post_id):
     if request.method == 'POST':
         form = AddComment(request.POST)
         if form.is_valid():
-            comment = Comment(comment=post, author=author, text=form.text)
+            comment = Comment(comment=post,
+                              author=author,
+                              text=form.text)
             comment.save()
             return redirect('blog.views.comments', post_id=post_id)
     else:
         form = AddComment()
     return render(request, 'blog/comment_page.html',
                   {'post': post, 'comment_list': comment_list,
-                   'posts': posts, 'form': form, 'user': author})
+                   'posts': posts, 'form': form, 'author': author})
+
+
+def add_post(request):
+    author = request.user
+    if request.method == 'POST':
+        form = AddPost(request.POST)
+        if form.is_valid():
+            post = Post(text=form.text,
+                        title=form.title,
+                        author=author,
+                        tags=form.tags)
+            post.save()
+            return redirect('blog.views.comments', post_id=post.id)
+    else:
+        form = AddPost()
+    return render(request, 'blog/add_post.html', {"form": form})
 
 
 def registration_form(request):
