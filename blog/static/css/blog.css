@@ -4,6 +4,7 @@
     text-align: left;
     margin: 0 auto;
     background-color: whitesmoke;
+    word-break: break-all;
 
 }
 

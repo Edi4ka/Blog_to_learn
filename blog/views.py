@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from .models import Post, Comment
 from django.utils import timezone
-from .forms import AddComment, RegistrationForm, LoginUser, AddPost
+from .forms import AddComment, RegistrationForm, LoginUser, AddPost, EditComment
 from django.contrib.auth import authenticate, login
 
 
@@ -35,15 +35,30 @@ def add_post(request):
     if request.method == 'POST':
         form = AddPost(request.POST)
         if form.is_valid():
-            post = Post(text=form.text,
-                        title=form.title,
+            post = Post(text=form.text_,
+                        title=form.title_,
                         author=author,
-                        tags=form.tags)
+                        tags=form.tags_)
             post.save()
             return redirect('blog.views.comments', post_id=post.id)
     else:
         form = AddPost()
     return render(request, 'blog/add_post.html', {"form": form})
+
+
+def edit_comment(request, comment_id):
+    user = request.user
+    if user == Comment.objects.get(id=comment_id).author:
+        if request.method == 'POST':
+            form = EditComment(request.POST)
+            if form.is_valid():
+                pass
+            ##Доделать сохранение комментария
+        else:
+            form = EditComment(Comment.objects.get(id=comment_id))
+    else:
+        return redirect('blog.views.main_page')
+    return render(request, 'blog/edit_comment.html', {'form': form})
 
 
 def registration_form(request):

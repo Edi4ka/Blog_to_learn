@@ -1,0 +1,7 @@
+{% extends 'blog/main_page_carcass.html' %}
+
+{% block content %}
+{% csrf_token %}
+    <p>{{ form.text }}</p>
+    <input type="submit" value="Сохранить">
+{% endblock %}

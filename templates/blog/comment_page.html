@@ -10,6 +10,9 @@
         <p>{{ comment.author }}{{ comment.rating }}</p>
         <p>{{ comment.text }}</p>
         <p>{{ comment.time_published }}</p>
+        {% if author == comment.author %}
+            <a href="/blog/edit_comment/{{ comment.id }}">Редактировать</a>
+        {% endif %}
     {% endfor %}
 
     {% if author.is_authenticated %}

@@ -1,4 +1,5 @@
 from django import forms
+from django.forms import ValidationError
 from .models import Comment, Post
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
@@ -20,9 +21,9 @@ class AddComment(forms.ModelForm):
         text = self.cleaned_data.get('text')
         if text:
             if len(text) < 5:
-                raise forms.ValidationError('Сообщение слишком короткое')
+                raise ValidationError('Сообщение слишком короткое')
         else:
-            raise forms.ValidationError("Введите текст")
+            raise ValidationError("Введите текст")
         self.text = text
         return self.cleaned_data
 
@@ -40,7 +41,7 @@ class RegistrationForm(UserCreationForm):
         password1 = self.cleaned_data.get('password1')
         password2 = self.cleaned_data.get('password2')
         if password1 != password2:
-            raise forms.ValidationError("The two password fields did not match.")
+            raise ValidationError("The two password fields did not match.")
         return password2
 
 
@@ -62,12 +63,12 @@ class LoginUser(forms.ModelForm):
         if username and password:
             self.user = authenticate(username=username, password=password)
             if self.user is None:
-                raise forms.ValidationError('Неправильное имя пользователя/пароль')
+                raise ValidationError('Неправильное имя пользователя/пароль')
         return self.cleaned_data
 
 
 class AddPost(forms.ModelForm):
-    title = forms.CharField(required=True, max_length=200)
+    title = forms.CharField()
     text = forms.Textarea()
     tags = forms.SlugField()
 
@@ -77,17 +78,38 @@ class AddPost(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(AddPost, self).__init__(*args, **kwargs)
-        self.text = None
-        self.title = None
-        self.tags = None
+        self.text_ = None
+        self.title_ = None
+        self.tags_ = None
 
     def clean(self):
         title = self.cleaned_data.get('title')
         text = self.cleaned_data.get('text')
         tags = self.cleaned_data.get('tags')
-        if len(text) < 5 or len(title) < 5:
-            raise forms.ValidationError('Слишком короткий пост/заголовок')
-        self.text = text
-        self.title = title
-        self.tags = tags
+        if text is None:
+            raise ValidationError('Введите текст')
+        if title is None:
+            raise ValidationError('Введите заголовок')
+        elif len(title) < 5 or len(text) < 5:
+            raise ValidationError('Текст/заголовок слишком короткие')
+        self.text_ = text
+        self.title_ = title
+        self.tags_ = tags
+        return self.cleaned_data
+
+
+class EditComment(forms.ModelForm):
+    text = forms.Textarea()
+
+    class Meta:
+        model = Comment
+        fields = ('text', )
+
+    def __init__(self, text_to_edit, *args, **kwargs):
+        self.text_to_edit = text_to_edit
+        super(EditComment, self).__init__(*args, **kwargs)
+
+    def clean(self):
+        text = self.text_to_edit
+        text = self.cleaned_data.get('text')
         return self.cleaned_data
