@@ -99,17 +99,17 @@ class AddPost(forms.ModelForm):
 
 
 class EditComment(forms.ModelForm):
-    text = forms.Textarea()
+    text = forms.TextInput()
 
     class Meta:
         model = Comment
         fields = ('text', )
 
-    def __init__(self, text_to_edit, *args, **kwargs):
-        self.text_to_edit = text_to_edit
+    def __init__(self, *args, **kwargs):
         super(EditComment, self).__init__(*args, **kwargs)
+        self.text_ = None
 
     def clean(self):
-        text = self.text_to_edit
         text = self.cleaned_data.get('text')
+        self.text_ = text
         return self.cleaned_data
