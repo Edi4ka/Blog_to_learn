@@ -1,8 +1,7 @@
 from django import forms
 from django.forms import ValidationError
-from .models import Comment, Post
+from .models import Comment, Post, User
 from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 
 
@@ -31,7 +30,7 @@ class AddComment(forms.ModelForm):
 class RegistrationForm(UserCreationForm):
     class Meta:
         model = User
-        fields = ('username', 'password1', 'password2', 'email')
+        fields = ('username', 'password1', 'password2', 'email', )
     username = forms.CharField(required=True, max_length=20)
     password1 = forms.CharField(required=True, max_length=20, widget=forms.PasswordInput)
     password2 = forms.CharField(required=True, max_length=20, widget=forms.PasswordInput)

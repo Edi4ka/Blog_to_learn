@@ -8,6 +8,7 @@
     <p>Комментарии:</p>
     {% for comment in comment_list %}
         <p>{{ comment.author }}{{ comment.rating }}</p>
+        <p>{{ author.registration_date }}</p>
         <p>{{ comment.text }}</p>
         <p>{{ comment.time_published }}</p>
         {% if author == comment.author %}

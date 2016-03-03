@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils import timezone
+from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
 
 
 class Post(models.Model):
@@ -32,3 +33,39 @@ class Comment(models.Model):
 
     def __str__(self):
         return "Post's ID is {0}".format(self.comment.id)
+
+
+class User(AbstractBaseUser):
+    username = models.CharField(max_length=25, unique=True)
+    password1 = models.CharField(max_length=25)
+    password2 = models.CharField(max_length=25)
+    date_birth = models.DateField(blank=True, null=True)
+    email = models.CharField(max_length=255)
+    registration_date = models.DateTimeField()
+    is_active = models.BooleanField(default=False)
+    is_admin = models.BooleanField(default=False)
+
+    REQUIRED_FIELDS = ['username', 'password1', 'password2', 'date_birth', 'email']
+    USERNAME_FIELD = 'username'
+
+
+class UserManager(BaseUserManager):
+    def create_user(self, email, password, registration_date, **kwargs):
+        user = self.model(email=self.normalize_email(email),
+                          registration_date=timezone.now(),
+                          is_active=True,
+                          **kwargs)
+        user.set_password(password)
+        user.save(using=self._db)
+
+    def create_superuser(self, email, password, registration_date, **kwargs):
+        user = self.model(
+            email=email,
+            registration_date=timezone.now(),
+            is_staff=True,
+            is_superuser=True,
+            is_active=True,
+            **kwargs)
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
