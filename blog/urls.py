@@ -10,5 +10,6 @@ urlpatterns = [
     url(r'^blog/logout/$', 'django.contrib.auth.views.logout', {"next_page": "/"}),
     url(r'^blog/login/$', views.login_user, name='login'),
     url(r'^blog/add_post/$', views.add_post, name='add_post'),
-    url(r'^blog/edit_comment/(?P<comment_id>[0-9]+)/$', views.edit_comment, name='edit_comment')
+    url(r'^blog/edit_comment/(?P<comment_id>[0-9]+)/$', views.edit_comment, name='edit_comment'),
+    url(r'^blog/personal/(?P<username>[\w]+)/$', views.personal, name='personal')
 ]

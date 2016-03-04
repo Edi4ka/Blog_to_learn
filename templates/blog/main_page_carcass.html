@@ -12,6 +12,7 @@
         {% if user.is_authenticated %}
             <p> Добро пожаловать, {{ user.username }}. Снова.</p>
             <p> <a href="/blog/logout">Выйти</a> </p>
+            <p> <a href="/blog/personal/{{ user.username.title }}">Личный кабинет</a> </p>
             {% if user.is_superuser %}
                 <p><a href="/blog/add_post">Добавить пост</a> </p>
                 {% endif %}

@@ -1,6 +1,5 @@
 from django.shortcuts import render, redirect
-from .models import Post, Comment
-from django.utils import timezone
+from .models import Post, Comment, NewUser
 from .forms import AddComment, RegistrationForm, LoginUser, AddPost, EditComment
 from django.contrib.auth import authenticate, login
 
@@ -82,7 +81,7 @@ def registration_form(request):
         if form.is_valid():
             form.save()
             user = authenticate(username=request.POST.get('username'),
-                                password=request.POST.get('password1'))
+                                password=request.POST.get('password2'))
             login(request, user)
             return render(request, 'blog/registration_successful.html')
     else:
@@ -110,3 +109,7 @@ def login_user(request):
         form = LoginUser()
 
     return render(request, 'blog/login.html', {'form': form})
+
+
+def personal(request, username):
+    return render(request, 'blog/personal.html',)

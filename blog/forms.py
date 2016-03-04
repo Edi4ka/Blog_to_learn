@@ -1,6 +1,6 @@
 from django import forms
 from django.forms import ValidationError
-from .models import Comment, Post, User
+from .models import Comment, Post, NewUser
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate
 
@@ -27,21 +27,34 @@ class AddComment(forms.ModelForm):
         return self.cleaned_data
 
 
-class RegistrationForm(UserCreationForm):
-    class Meta:
-        model = User
-        fields = ('username', 'password1', 'password2', 'email', )
-    username = forms.CharField(required=True, max_length=20)
-    password1 = forms.CharField(required=True, max_length=20, widget=forms.PasswordInput)
-    password2 = forms.CharField(required=True, max_length=20, widget=forms.PasswordInput)
-    email = forms.EmailField(required=True)
+class RegistrationForm(forms.ModelForm):
+    username = forms.CharField(required=True, max_length=25)
+    password1 = forms.CharField(widget=forms.PasswordInput)
+    password2 = forms.CharField(widget=forms.PasswordInput)
+    email = forms.EmailField(max_length=255)
 
-    def clean_password2(self):
+    class Meta:
+        model = NewUser
+        fields = ('username', 'password1', 'password2', 'email')
+
+    def clean(self):
+        username = self.cleaned_data.get('username')
         password1 = self.cleaned_data.get('password1')
         password2 = self.cleaned_data.get('password2')
-        if password1 != password2:
-            raise ValidationError("The two password fields did not match.")
-        return password2
+        if password2 != password1:
+            raise ValidationError('Пароли не совпадают')
+        elif len(password1) < 5:
+            raise ValidationError('Пароль слишком короткий')
+        elif len(username) < 3:
+            raise ValidationError('Никнейм слишком короткий')
+        return self.cleaned_data
+
+    def save(self, commit=True):
+        user = super(RegistrationForm, self).save(commit=False)
+        user.set_password(self.cleaned_data.get('password1'))
+        if commit:
+            user.save()
+        return user
 
 
 class LoginUser(forms.ModelForm):
@@ -49,7 +62,7 @@ class LoginUser(forms.ModelForm):
     password = forms.CharField(required=True, widget=forms.PasswordInput)
 
     class Meta:
-        model = User
+        model = NewUser
         fields = ('username', 'password', )
 
     def __init__(self, *args, **kwargs):
@@ -93,7 +106,10 @@ class AddPost(forms.ModelForm):
             raise ValidationError('Текст/заголовок слишком короткие')
         self.text_ = text
         self.title_ = title
-        self.tags_ = tags
+        if tags is None:
+            self.tags_ = ''
+        elif tags is not None:
+            self.tags = tags
         return self.cleaned_data
 
 
