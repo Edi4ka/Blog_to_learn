@@ -1,5 +1,15 @@
 {% extends 'blog/main_page.html' %}
 
 {% block content %}
-<p>{{ user.username }}</p>
+    <p>{{ user.username }}</p>
+    <p>Текущий рейтинг:{{ user_rating }}</p>
+    <p>Количество сообщений: {{ user_comments }}</p>
+    <p>Количество постов: {{ user_posts }}</p>
+    {% if user.is_staff %}
+        {% for post in posts_to_approve %}
+            {{ post.title }}
+            {{ post.text }}
+            <a href="{% url 'approve_post' post_id=post.id %}">Дать зеленый</a>
+        {% endfor %}
+    {% endif %}
 {% endblock %}

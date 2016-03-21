@@ -1,24 +1,24 @@
-.block_center{
-    width: 800px;
-    font: 150% arial;
-    text-align: left;
-    margin: 0 auto;
-    background-color: whitesmoke;
-    word-break: break-all;
-
+.container {
+  width: 100%;
+}
+section,
+aside {
+  margin: 1.858736059%;
+}
+section {
+  float: left;
+  width: 63.197026%;
+}
+aside {
+  float: right;
+  width: 29.3680297%;
 }
 
-.block_top{
-    height: 100px;
-
+.box_shadow{
+  box-shadow: 0 0 10px 5px rgba(221, 221, 221, 1);
 }
 
-.color{
-    color: cornsilk;
-}
+.background_color{
+    color: lightgray;
 
-.block_left{
-    float: left;
-    width: 20%;
-    font: 150% arial;
 }

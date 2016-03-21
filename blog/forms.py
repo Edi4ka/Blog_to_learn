@@ -12,10 +12,6 @@ class AddComment(forms.ModelForm):
         model = Comment
         fields = ('text', )
 
-    def __init__(self, *args, **kwargs):
-        super(AddComment, self).__init__(*args, **kwargs)
-        self.text = None
-
     def clean(self):
         text = self.cleaned_data.get('text')
         if text:
@@ -23,7 +19,6 @@ class AddComment(forms.ModelForm):
                 raise ValidationError('Сообщение слишком короткое')
         else:
             raise ValidationError("Введите текст")
-        self.text = text
         return self.cleaned_data
 
 
@@ -80,36 +75,24 @@ class LoginUser(forms.ModelForm):
 
 
 class AddPost(forms.ModelForm):
-    title = forms.CharField()
-    text = forms.Textarea()
+    title = forms.TextInput()
+    text = forms.TextInput()
     tags = forms.SlugField()
 
     class Meta:
         model = Post
-        fields = ('title', 'text',)
-
-    def __init__(self, *args, **kwargs):
-        super(AddPost, self).__init__(*args, **kwargs)
-        self.text_ = None
-        self.title_ = None
-        self.tags_ = None
+        fields = ('title', 'text', 'tags', )
 
     def clean(self):
         title = self.cleaned_data.get('title')
         text = self.cleaned_data.get('text')
         tags = self.cleaned_data.get('tags')
-        if text is None:
-            raise ValidationError('Введите текст')
-        if title is None:
-            raise ValidationError('Введите заголовок')
-        elif len(title) < 5 or len(text) < 5:
-            raise ValidationError('Текст/заголовок слишком короткие')
-        self.text_ = text
-        self.title_ = title
-        if tags is None:
-            self.tags_ = ''
-        elif tags is not None:
-            self.tags = tags
+        if len(title) < 5:
+            raise ValidationError('Заголовок слишком короткий')
+        if len(text) < 20:
+            raise ValidationError('Текст слишком короткий')
+        if len(tags) < 5:
+            raise ValidationError('Тэг слишком короткий')
         return self.cleaned_data
 
 
@@ -122,9 +105,36 @@ class EditComment(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(EditComment, self).__init__(*args, **kwargs)
-        self.text_ = None
+        self.text_to_view = None
 
     def clean(self):
         text = self.cleaned_data.get('text')
-        self.text_ = text
+        if len(text) < 5:
+            raise ValidationError('Сообщение слишком короткое')
+        self.text_to_view = text
+        return self.cleaned_data
+
+
+class EditPost(forms.ModelForm):
+    text = forms.TextInput()
+    title = forms.TextInput()
+
+    class Meta:
+        model = Post
+        fields = ('text', 'title', )
+
+    def __init__(self, *args, **kwargs):
+        super(EditPost, self).__init__(*args, **kwargs)
+        self.text_to_view = None
+        self.title_to_view = None
+
+    def clean(self):
+        text = self.cleaned_data.get('text')
+        title = self.cleaned_data.get('title')
+        if len(text) < 10:
+            raise ValidationError('Сообщение слишком короткое')
+        if len(title) < 5:
+            raise ValidationError('Заголовок слишком короткий')
+        self.text_to_view = text
+        self.title_to_view = title
         return self.cleaned_data

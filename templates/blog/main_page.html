@@ -1,10 +1,27 @@
 {% extends 'blog/main_page_carcass.html' %}
 
 {%block content%}
-{% for post in posts %}
+{% for post in post_list %}
+    <div class="box_shadow">
     <p>{{ post.title }} {{ post.author }}{{ post.rating }}</p>
     <p>{{ post.text }}</p>
     <p>{{ post.time_published }}</p>
     <p><a href="/blog/{{ post.id }}/">Комментарии: {{ post.comment_set.count }}</a></p>
+    {% if author == post.author %}
+    <a href="{% url 'delete_post' post_id=post.pk %}">Удалить пост</a>
+    {% endif %}
+    </div>
     {% endfor %}
+    {% if post_list.has_previous %}
+        <a href="?page={{ post_list.previous_page_number }}">Предыдущая страница</a>
+    {% endif %}
+    {{ post_list.number }} из {{ post_list.paginator.num_pages }}
+    {% if post_list.has_next %}
+        <a href="?page={{ post_list.next_page_number }}">Следующая страница</a>
+    {% endif %}
+{% endblock %}
+
+{% block tags %}
+    {% include 'blog/tag_list.html' %}
+
 {% endblock %}

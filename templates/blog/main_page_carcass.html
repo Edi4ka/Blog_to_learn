@@ -3,12 +3,12 @@
 <html lang="en">
 
 <head>
-
+<a href="">Home</a> <a href="/blog/main_info/">About</a>
 </head>
 
 <body>
-<div class="block_top"></div>
-<div class="block_left">
+<div class="container">
+        <aside>
         {% if user.is_authenticated %}
             <p> Добро пожаловать, {{ user.username }}. Снова.</p>
             <p> <a href="/blog/logout">Выйти</a> </p>
@@ -22,13 +22,10 @@
 
             {% endif %}
         <p>{% block return %} {% endblock %}</p>
+        {% include 'blog/tag_list.html' %}
+        </aside>
+        <section>{% block content %}{% endblock %}</section>
 </div>
-
-<div class="block_center">
-    {% block content %}
-    {% endblock %}
-</div>
-
 </body>
 
 </html>

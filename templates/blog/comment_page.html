@@ -1,19 +1,37 @@
 {% extends 'blog/main_page_carcass.html' %}
 {% block content %}
-    <p>{{ post.title }} {{ post.author }}{{ post.rating }}</p>
+    <p>{{ post.title }} {{ post.author }}</p>
+    {% if author.is_authenticated %}
+        <p><a href="{% url 'add_plus_post' post_id=post.pk %}">+</a>
+        {{ post.rating }}
+        <a href="{% url 'add_minus_post' post_id=post.pk %}">-</a></p>
+    {% endif %}
     <p>{{ post.text }}</p>
-    <p>{{ post.time_published }}</p>
-
-
+    <p>{{ post.time_published }} Последний раз редактировано:
+        {% if post.time_edited %}{{ post.time_edited }}{% endif %}</p>
+    <p>{% if author == post.author %}
+        <a href="/blog/edit_post/{{ post.id }}">Редактировать</a>
+       {% endif %} </p>
     <p>Комментарии:</p>
     {% for comment in comment_list %}
-        <p>{{ comment.author }}{{ comment.rating }}</p>
-        <p>{{ author.registration_date }}</p>
-        <p>{{ comment.text }}</p>
-        <p>{{ comment.time_published }}</p>
+        <div class="box_shadow">
+         <p>{{ comment.author }}</p>
+         {% if user.is_authenticated %}
+             <p><a href="{% url 'add_plus_comment' comment_id=comment.pk%}">+</a>{{ comment.rating }}
+                <a href="{% url 'add_minus_comment' comment_id=comment.pk %}">-</a></p>
+         {% endif %}
+         <p>{{ author.registration_date }}</p>
+         <p>{{ comment.text }}</p>
+         <p>{{ comment.time_published }}
+            {% if comment.time_edited %} Последний раз редактировано: {{ comment.time_edited }}{% endif %}
+           </p>
         {% if author == comment.author %}
-            <a href="/blog/edit_comment/{{ comment.id }}">Редактировать</a>
+            <div class="box_shadow">
+            <a href="/blog/edit_comment/{{ comment.id }}"><img src="http://puu.sh/nNdYD/5d8ba6464c.png"></a>
+            <a href="{% url 'delete_comment' comment_id=comment.pk %}">Удалить комментарий</a>
+            </div>
         {% endif %}
+        </div>
     {% endfor %}
 
     {% if author.is_authenticated %}
@@ -26,8 +44,4 @@
 
     {% endif %}
 
-{% endblock %}
-
-{% block return %}
-    <a href="{% url "main_page" %}">Вернуться на главную страницу</a>
 {% endblock %}
