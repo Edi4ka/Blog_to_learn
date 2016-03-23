@@ -25,6 +25,7 @@ class Post(models.Model):
 
 class Comment(models.Model):
     comment = models.ForeignKey(Post, on_delete=models.CASCADE)
+    parent = models.ForeignKey('self', on_delete=models.CASCADE, blank=True, null=True, related_name='child')
     author = models.ForeignKey('blog.NewUser')
     text = models.TextField()
     time_published = models.DateTimeField(auto_now_add=True)
@@ -36,13 +37,19 @@ class Comment(models.Model):
 
 
 class RatingPost(models.Model):
-    post = models.ForeignKey(Post)
+    CHOICES = (('-', 'minus'),
+               ('+', 'plus'))
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)
     rating_author = models.ForeignKey('blog.NewUser')
+    choice_rating = models.CharField(max_length=5, choices=CHOICES)
 
 
 class RatingComment(models.Model):
-    comment = models.ForeignKey(Comment)
+    CHOICES = (('-', 'minus'),
+               ('+', 'plus'))
+    comment = models.ForeignKey(Comment, on_delete=models.CASCADE)
     rating_author = models.ForeignKey('blog.NewUser')
+    choice_rating = models.CharField(max_length=5, choices=CHOICES)
 
 
 class UserManager(BaseUserManager):

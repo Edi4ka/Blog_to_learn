@@ -12,7 +12,6 @@
         {% if user.is_authenticated %}
             <p> Добро пожаловать, {{ user.username }}. Снова.</p>
             <p> <a href="/blog/logout">Выйти</a> </p>
-            <p> <a href="/blog/personal/{{ user.username.title }}">Личный кабинет</a> </p>
             {% if user.is_superuser %}
                 <p><a href="/blog/add_post">Добавить пост</a> </p>
                 {% endif %}
@@ -21,8 +20,7 @@
                 <a href="/blog/login"><p>Войти</p></a>
 
             {% endif %}
-        <p>{% block return %} {% endblock %}</p>
-        {% include 'blog/tag_list.html' %}
+        {% block user_info %}{% endblock %}
         </aside>
         <section>{% block content %}{% endblock %}</section>
 </div>

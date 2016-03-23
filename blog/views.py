@@ -18,8 +18,19 @@ def main_page(request):
         post_list = paginated.page(1)
     except EmptyPage:
         post_list = paginated.page(paginated.num_pages)
+    user_rating = sum([x.rating for x in Post.objects.filter(author=author)] +
+                      [x.rating for x in Comment.objects.filter(author=author)])
+    user_comments = Comment.objects.filter(author=author).count()
+    user_posts = Post.objects.filter(author=author).count()
+    user_birth = author.registration_date
 
-    return render(request, 'blog/main_page.html', {'post_list': post_list, 'author' : author})
+    return render(request, 'blog/main_page.html', {'post_list': post_list,
+                                                   'author' : author,
+                                                   'user_rating': user_rating,
+                                                   'user_comments': user_comments,
+                                                   'user_posts': user_posts,
+                                                   'user_birth': user_birth,
+                                                   })
 
 
 def comments(request, post_id):
@@ -128,9 +139,16 @@ def add_plus_post(request, post_id):
     if len(RatingPost.objects.filter(post=post, rating_author=user)) == 0:
         post.rating += 1
         post.save()
-        plus_added = RatingPost(post=Post.objects.get(pk=post_id), rating_author=user)
-        plus_added.save()
+        RatingPost(post=Post.objects.get(pk=post_id), rating_author=user, choice_rating='+').save()
         return redirect('blog.views.comments', post_id=post_id)
+    else:
+        rating = post.ratingpost_set.get(rating_author=user)
+        if rating.choice_rating is '-':
+            post.rating += 2
+            post.save()
+            rating.choice_rating = '+'
+            rating.save()
+            return redirect('blog.views.comments', post_id=post_id)
     return redirect('blog.views.comments', post_id=post_id)
 
 
@@ -140,8 +158,16 @@ def add_minus_post(request, post_id):
     if len(RatingPost.objects.filter(post=post, rating_author=user)) == 0:
         post.rating -= 1
         post.save()
-        RatingPost(post=Post.objects.get(pk=post_id), rating_author=user).save()
+        RatingPost(post=Post.objects.get(pk=post_id), rating_author=user, choice_rating='-').save()
         return redirect('blog.views.comments', post_id=post_id)
+    else:
+        rating = post.ratingpost_set.get(rating_author=user)
+        if rating.choice_rating is '+':
+            post.rating -= 2
+            post.save()
+            rating.choice_rating = '-'
+            rating.save()
+            return redirect('blog.views.comments', post_id=post_id)
     return redirect('blog.views.comments', post_id=post_id)
 
 
@@ -151,9 +177,16 @@ def add_plus_comment(request, comment_id):
     if len(RatingComment.objects.filter(comment=comment, rating_author=user)) == 0:
         comment.rating += 1
         comment.save()
-        plus_added = RatingComment(comment=Comment.objects.get(pk=comment_id), rating_author=user)
-        plus_added.save()
+        RatingComment(comment=Comment.objects.get(pk=comment_id), rating_author=user, choice_rating='+').save()
         return redirect('blog.views.comments', post_id=comment.comment.id)
+    else:
+        rating = comment.ratingcomment_set.get(rating_author=user)
+        if rating.choice_rating is '-':
+            comment.rating += 2
+            comment.save()
+            rating.choice_rating = '+'
+            rating.save()
+            return redirect('blog.views.comments', post_id=comment.comment.id)
     return redirect('blog.views.comments', post_id=comment.comment.id)
 
 
@@ -163,9 +196,16 @@ def add_minus_comment(request, comment_id):
     if len(RatingComment.objects.filter(comment=comment, rating_author=user)) == 0:
         comment.rating -= 1
         comment.save()
-        plus_added = RatingComment(comment=Comment.objects.get(pk=comment_id), rating_author=user)
-        plus_added.save()
+        RatingComment(comment=Comment.objects.get(pk=comment_id), rating_author=user, choice_rating='-').save()
         return redirect('blog.views.comments', post_id=comment.comment.id)
+    else:
+        rating = comment.ratingcomment_set.get(rating_author=user)
+        if rating.choice_rating is '+':
+            comment.rating -= 2
+            comment.save()
+            rating.choice_rating = '-'
+            rating.save()
+            return redirect('blog.views.comments', post_id=comment.comment.id)
     return redirect('blog.views.comments', post_id=comment.comment.id)
 
 

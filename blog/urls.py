@@ -14,7 +14,6 @@ urlpatterns = [
     url(r'blog/delete_comment/(?P<comment_id>[0-9]+)/$', views.delete_comment, name='delete_comment'),
     url(r'^blog/edit_post/(?P<post_id>[0-9]+)/$', views.edit_post, name='edit_post'),
     url(r'^blog/delete_post/(?P<post_id>[0-9]+)/$', views.delete_post, name='delete_post'),
-    url(r'^blog/personal/(?P<username>[\w]+)/$', views.personal, name='personal'),
     url(r'^blog/personal/approve/(?P<post_id>[0-9]+)/$', views.approve_post, name='approve_post'),
     url(r'^blog/add_plus_post/(?P<post_id>[0-9]+)/$', views.add_plus_post, name='add_plus_post'),
     url(r'^blog/add_minus_post/(?P<post_id>[0-9]+)/$', views.add_minus_post, name='add_minus_post'),

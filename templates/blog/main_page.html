@@ -20,7 +20,12 @@
         <a href="?page={{ post_list.next_page_number }}">Следующая страница</a>
     {% endif %}
 {% endblock %}
-
+{% block user_info %}
+    <p>Дата регистрации: {{ user_birth }}</p>
+    <p>Рейтинг: {{ user_rating }}</p>
+    <p>Комментарии: {{ user_comments }}</p>
+    <p>Посты: {{ user_posts }}</p>
+{% endblock %}
 {% block tags %}
     {% include 'blog/tag_list.html' %}
 
